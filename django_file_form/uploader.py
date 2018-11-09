@@ -11,6 +11,7 @@ from .util import load_class
 from django_file_form.ajaxuploader.backends.base import AbstractUploadBackend
 from .models import get_storage
 
+
 class FileFormUploadBackend(LocalUploadBackend):
     UPLOAD_DIR = conf.UPLOAD_DIR
 
@@ -56,20 +57,13 @@ class FileFormUploader(AjaxFileUploader):
         return super(FileFormUploader, self).__call__(request, *args, **kwargs)
 
 
-
-class GenericUploadBackend(AbstractUploadBackend):
+class RemoteUploadBackend(AbstractUploadBackend):
     storage_object = None
     UPLOAD_DIR=conf.UPLOAD_DIR
 
     def setup(self, filename, *args, **kwargs):
         self.setup_storage()
         self._path = self.get_path(filename, *args, **kwargs)
-        # try:
-        #     os.makedirs(os.path.realpath(os.path.dirname(self._path)))
-        # except OSError:
-        #     pass
-        # self._dest = BufferedWriter(FileIO(self._path, "w"))
-        print(str(self.storage_object))
         self._dest = self.storage_object.open(self._path, "w")
 
     def setup_storage(self):
